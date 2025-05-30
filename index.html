@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Giám Sát, Điều Khiển Môi Trường Trong Nhà Kinh</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script> <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-leaf"></i> <h3>NHÓM 3 DATN </h3>
+            </div>
+            <ul class="nav-tabs">
+                <li class="nav-item active" data-tab="home">
+                    <a href="#"><i class="fas fa-home"></i> <span>Trang Chủ</span></a>
+                </li>
+                <li class="nav-item" data-tab="monitoring">
+                    <a href="#"><i class="fas fa-desktop"></i> <span>Giám Sát</span></a>
+                </li>
+                <li class="nav-item" data-tab="history">
+                    <a href="#"><i class="fas fa-chart-line"></i> <span>Lịch Sử Phiên</span></a>
+                </li>
+                <li class="nav-item" data-tab="alerts">
+                    <a href="#"><i class="fas fa-bell"></i> <span>Ngưỡng Cảnh Báo</span></a>
+                </li>
+                <li class="nav-item" data-tab="settings">
+                    <a href="#"><i class="fas fa-cogs"></i> <span>Cài Đặt</span></a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>&copy; 2025 Quang Dũng </p>
+            </div>
+        </nav>
+
+        <main class="content-area">
+            <section id="home-content" class="tab-content active">
+                <div class="content-wrapper"> <div class="header-bar">
+                        <h1>Chào mừng bạn!</h1>
+                        <button id="export-excel-home" class="btn btn-outline">
+                            <i class="fas fa-file-excel"></i> XUẤT EXCEL
+                        </button>
+                    </div>
+                    <p class="intro-text">Chọn một khu vườn để bắt đầu quản lý và theo dõi thông số môi trường.</p>
+                    <div class="garden-selection-container">
+                        <div class="garden-card" data-garden="garden1">
+                            <div class="garden-card-image" style="background-image: url('vuon1.png');"></div>
+                            <span>Khu Vườn 1</span>
+                        </div>
+                        <div class="garden-card" data-garden="garden2">
+                            <div class="garden-card-image" style="background-image: url('vuon2.png');"></div>
+                            <span>Khu Vườn 2</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="monitoring-content" class="tab-content">
+                <div class="content-wrapper">
+                    <div class="header-bar">
+                        <h1 id="monitoring-title">Chọn vườn để xem thông tin</h1>
+                        <button id="back-to-garden-selection" class="btn btn-secondary" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> Chọn Vườn Khác
+                        </button>
+                    </div>
+                    <div id="garden-details-container" style="display: none;">
+                        <div class="panels-wrapper">
+                            <div class="panel sensor-panel">
+                                <h2><i class="fas fa-tachometer-alt"></i> Thông số Môi trường</h2>
+                                <div class="sensor-row" id="temp-row">
+                                    <div class="icon"><i class="fas fa-temperature-high"></i></div>
+                                    <div class="sensor-info">Nhiệt độ</div>
+                                    <div class="sensor-display">
+                                        <canvas id="temperature-chart" width="45" height="45"></canvas>
+                                        <div class="sensor-value" id="temperature-value">--°C</div>
+                                    </div>
+                                </div>
+                                <div class="sensor-row" id="humid-row">
+                                    <div class="icon"><i class="fas fa-tint"></i></div>
+                                    <div class="sensor-info">Độ ẩm K.Khí</div>
+                                    <div class="sensor-display">
+                                        <canvas id="humidity-chart" width="45" height="45"></canvas>
+                                        <div class="sensor-value" id="humidity-value">--%</div>
+                                    </div>
+                                </div>
+                                <div class="sensor-row" id="soil-row">
+                                    <div class="icon"><i class="fas fa-water"></i></div> <div class="sensor-info">Độ ẩm đất</div>
+                                    <div class="sensor-display">
+                                        <canvas id="soil-moisture-chart" width="45" height="45"></canvas>
+                                        <div class="sensor-value" id="soil-moisture-value">--%</div>
+                                    </div>
+                                </div>
+                                <div class="sensor-row" id="light-row">
+                                    <div class="icon"><i class="fas fa-sun"></i></div>
+                                    <div class="sensor-info">Ánh sáng</div>
+                                    <div class="sensor-display">
+                                        <div class="sensor-value" id="light-value">--</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel control-panel">
+                                <h2><i class="fas fa-gamepad"></i> Bảng Điều Khiển</h2>
+                                <div class="control-row">
+                                    <div class="icon"><i class="far fa-lightbulb"></i></div>
+                                    <div class="control-info">Đèn</div>
+                                    <div class="control-status" id="bulb-status-text">--</div>
+                                    <button class="control-btn" id="bulb-button" data-device="bulb">OFF</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="icon"><i class="fas fa-fan"></i></div>
+                                    <div class="control-info">Quạt</div>
+                                    <div class="control-status" id="fan-status-text">--</div>
+                                    <button class="control-btn" id="fan-button" data-device="fan">OFF</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="icon"><i class="fas fa-tint"></i> <i class="fas fa-pump-soap" style="font-size: 0.8em;"></i></div>
+                                    <div class="control-info">Máy bơm</div>
+                                    <div class="control-status" id="pump-status-text">--</div>
+                                    <button class="control-btn" id="pump-button" data-device="pump">OFF</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="icon"><i class="fas fa-spray-can"></i></div>
+                                    <div class="control-info">Phun sương</div>
+                                    <div class="control-status" id="mist-status-text">--</div>
+                                    <button class="control-btn" id="mist-button" data-device="mist">OFF</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="monitoring-placeholder" class="placeholder-message" style="display: block;">
+                        <i class="fas fa-seedling fa-3x"></i>
+                        <p>Vui lòng chọn một khu vườn từ Trang Chủ để bắt đầu giám sát.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="history-content" class="tab-content">
+                <div class="content-wrapper">
+                    <div class="header-bar">
+                        <h1 id="history-title">Lịch Sử Dữ Liệu Phiên</h1>
+                    </div>
+                    <div id="history-selection-placeholder" class="placeholder-message">
+                        <i class="fas fa-history fa-3x"></i>
+                        <p>Chọn một vườn ở Tab Giám Sát để xem lịch sử dữ liệu trong phiên này.</p>
+                        <small>(Dữ liệu lịch sử chỉ được lưu trữ tạm thời trong khi bạn mở trang web)</small>
+                    </div>
+                    <div id="history-data-view" style="display:none;">
+                        <div class="history-controls">
+                            <label for="sensor-history-select">Chọn cảm biến:</label>
+                            <select id="sensor-history-select" class="custom-select">
+                                <option value="temperature">Nhiệt độ</option>
+                                <option value="humidity">Độ ẩm Không khí</option>
+                                <option value="soilMoisture">Độ ẩm Đất</option>
+                            </select>
+                        </div>
+                        <div class="chart-container-large">
+                            <canvas id="session-history-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="alerts-content" class="tab-content">
+                <div class="content-wrapper">
+                    <div class="header-bar">
+                        <h1>Cài Đặt Ngưỡng Cảnh Báo</h1>
+                    </div>
+                    <div id="alert-garden-selection-placeholder" class="placeholder-message">
+                         <i class="fas fa-exclamation-triangle fa-3x"></i>
+                        <p>Vui lòng chọn một khu vườn từ Trang Chủ để cài đặt ngưỡng.</p>
+                    </div>
+                    <div id="alert-settings-forms-container" style="display:none;">
+                        <h2 id="alert-settings-garden-title"></h2>
+                        <form id="alert-threshold-form" class="threshold-form">
+                            <div class="form-section">
+                                <h4><i class="fas fa-temperature-high"></i> Nhiệt độ (°C)</h4>
+                                <div class="form-group-inline">
+                                    <label for="temp_min">Min:</label>
+                                    <input type="number" id="temp_min" name="temperature_min" class="threshold-input">
+                                    <label for="temp_max">Max:</label>
+                                    <input type="number" id="temp_max" name="temperature_max" class="threshold-input">
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <h4><i class="fas fa-tint"></i> Độ ẩm Không khí (%)</h4>
+                                 <div class="form-group-inline">
+                                    <label for="humid_min">Min:</label>
+                                    <input type="number" id="humid_min" name="humidity_min" class="threshold-input">
+                                    <label for="humid_max">Max:</label>
+                                    <input type="number" id="humid_max" name="humidity_max" class="threshold-input">
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <h4><i class="fas fa-water"></i> Độ ẩm Đất (%)</h4>
+                                <div class="form-group-inline">
+                                    <label for="soil_min">Min:</label>
+                                    <input type="number" id="soil_min" name="soilMoisture_min" class="threshold-input">
+                                    <label for="soil_max">Max:</label>
+                                    <input type="number" id="soil_max" name="soilMoisture_max" class="threshold-input">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Lưu Ngưỡng</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings-content" class="tab-content">
+                <div class="content-wrapper">
+                    <div class="header-bar">
+                        <h1>Cài Đặt Chung</h1>
+                    </div>
+                    <div class="settings-options">
+                        <div class="settings-item">
+                            <h4>Quản lý Local Storage</h4>
+                            <p>Xóa các lựa chọn đã lưu (vườn hiện tại, tab đang mở) khỏi trình duyệt của bạn.</p>
+                            <button id="clear-local-settings-btn" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Xóa Cài Đặt Đã Lưu</button>
+                        </div>
+                        </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
